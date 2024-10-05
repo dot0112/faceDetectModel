@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append(r"D:\mtcnn\dataset_generator\func")
 from func.get_data import get_data
 from func.directory import create_directory
 from func.list import shuffle_lists
@@ -23,3 +26,6 @@ def dataset_generate(
         resize_factor,
         batch_size,
     )
+
+
+dataset_generate("wider", "pnet", window_size=12)

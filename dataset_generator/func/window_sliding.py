@@ -11,7 +11,7 @@ class_count = {0: 0, 1: 0, 2: 0}
 def window_sliding(
     imageset_name: str,
     model_name: str,
-    image: Image,
+    image: Image.Image,
     labels: list[list[int]],
     window_size: int,
     stride: int = 2,
@@ -23,7 +23,8 @@ def window_sliding(
 
     for y in range(0, h - window_size + 1, stride):
         for x in range(0, w - window_size + 1, stride):
-            max_iou, target = 0
+            max_iou = 0
+            target = [0, 0, 0, 0]
             for label in labels:
                 iou = cal_iou(x, y, label, window_size)
                 if max_iou < iou:
@@ -57,8 +58,12 @@ def window_sliding(
 
             bbox_x1 = max(0, target[0] - x) / window_size
             bbox_y1 = max(0, target[1] - y) / window_size
-            bbox_x2 = max(min(x + window_size, target[0] + target[2]) - x) / window_size
-            bbox_y2 = max(min(y + window_size, target[1] + target[3]) - y) / window_size
+            bbox_x2 = (
+                max(min(x + window_size, target[0] + target[2]) - x, 0.0) / window_size
+            )
+            bbox_y2 = (
+                max(min(y + window_size, target[1] + target[3]) - y, 0.0) / window_size
+            )
             bbox = [bbox_x1, bbox_y1, bbox_x2, bbox_y2]
 
             label_json = {

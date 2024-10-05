@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append(r"D:\mtcnn\pnet/training_pnet\func")
 from func.labels_generate import labels_generate
 from func.dataset_generate import dataset_generate
 from func.create_model import create_model

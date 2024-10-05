@@ -107,55 +107,39 @@ def bbox_loss(y_true, y_pred):
         y_pred[:, 3],
     )
 
-    true_x_center, true_y_center = (
-        (true_x1 + true_x2) / 2,
-        (true_y1 + true_y2) / 2,
-    )
+    true_x_center, true_y_center = (true_x1 + true_x2) / 2, (true_y1 + true_y2) / 2
+    pred_x_center, pred_y_center = (pred_x1 + pred_x2) / 2, (pred_y1 + pred_y2) / 2
 
-    pred_x_center, pred_y_center = (
-        (pred_x1 + pred_x2) / 2,
-        (pred_y1 + pred_y2) / 2,
-    )
+    inter_x1 = tf.maximum(true_x1, pred_x1)
+    inter_y1 = tf.maximum(true_y1, pred_y1)
+    inter_x2 = tf.minimum(true_x2, pred_x2)
+    inter_y2 = tf.minimum(true_y2, pred_y2)
 
-    inter_x1, inter_y1, inter_x2, inter_y2 = (
-        tf.maximum(pred_x1, true_x1),
-        tf.maximum(pred_y1, true_y1),
-        tf.maximum(pred_x2, true_x2),
-        tf.maximum(pred_y2, true_y2),
-    )
-
-    inter_width, inter_height = (
-        tf.maximum(inter_x2 - inter_x1, 0.0),
-        tf.maximum(inter_y2 - inter_y1, 0.0),
-    )
+    inter_width = tf.maximum(inter_x2 - inter_x1, 0.0)
+    inter_height = tf.maximum(inter_y2 - inter_y1, 0.0)
     inter_area = inter_width * inter_height
 
     true_area = (true_x2 - true_x1) * (true_y2 - true_y1)
     pred_area = (pred_x2 - pred_x1) * (pred_y2 - pred_y1)
     union_area = true_area + pred_area - inter_area
 
-    iou = inter_area / union_area
+    iou = inter_area / (union_area + 1e-7)
 
-    center_dist = {
-        (pred_x_center - true_x_center) ** 2 + (pred_y_center - true_y_center) ** 2
-    }
-
-    c = (tf.maximum(pred_x2 - true_x2) - tf.minimum(pred_x1, true_x1)) ** 2 + (
-        tf.maximum(pred_y2, true_y2) - tf.minimum(pred_y1, true_y1)
+    center_dist = (pred_x_center - true_x_center) ** 2 + (
+        pred_y_center - true_y_center
     ) ** 2
-    v = {
-        (4.0 / (tf.constant(math.pi, dtype=y_true.dtype) ** 2))
-        * (
-            (
-                tf.atan((true_x2 - true_x1) / (true_y2 - true_y1))
-                - tf.atan((pred_x2 - pred_x1) / (pred_y2 - pred_y1))
-            )
-            ** 2
-        )
-    }
 
-    alpha = (1.0 - iou + v) / v
-    ciou = iou - center_dist / c - alpha * v
+    c = (tf.maximum(true_x2, pred_x2) - tf.minimum(true_x1, pred_x1)) ** 2 + (
+        tf.maximum(true_y2, pred_y2) - tf.minimum(true_y1, pred_y1)
+    ) ** 2
+
+    v = (4.0 / (tf.constant(math.pi, dtype=y_true.dtype) ** 2)) * tf.square(
+        tf.atan((true_x2 - true_x1) / (true_y2 - true_y1 + 1e-7))
+        - tf.atan((pred_x2 - pred_x1) / (pred_y2 - pred_y1 + 1e-7))
+    )
+
+    alpha = v / ((1.0 - iou) + v + 1e-7)
+    ciou = iou - (center_dist / (c + 1e-7)) - alpha * v
 
     loss = 1.0 - ciou
     return loss
