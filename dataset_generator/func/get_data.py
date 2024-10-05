@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 from tqdm import tqdm
 from dotenv import load_dotenv
-from glob import glob
 
 
 def get_data(imageset_name: str) -> tuple[list[str], list[list[int]]]:
