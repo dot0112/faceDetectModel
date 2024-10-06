@@ -12,7 +12,7 @@ def get_label(
 ) -> tuple:
     file_name = Path(image_path).stem
     file_name_split = file_name.split("_")
-    label_name = f"{'_'.join(file_name_split[:-2])}_label_{file_name_split[-1]}"
+    label_name = f"{(file_name_split[0])}_{file_name_split[-1]}"
 
     label_path = root_dir / dataset_name / str(part) / "labels" / f"{label_name}.json"
 

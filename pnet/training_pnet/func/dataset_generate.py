@@ -61,7 +61,7 @@ def preprocess_wrapper(
         [image_path, class_label, bbox_label],
         [tf.float32, tf.float32, tf.float32],
     )
-    image_tensor.set_shape((12, 12, 1))
+    image_tensor.set_shape((12, 12, 3))
     class_label.set_shape((1, 1, 1))
     bbox_label.set_shape((1, 1, 4))
     combined_label = tf.concat([class_label, bbox_label], axis=-1)

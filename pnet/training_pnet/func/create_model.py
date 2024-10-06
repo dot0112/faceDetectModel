@@ -41,7 +41,7 @@ def create_mtcnn_pnet_functional(input_shape):
 
 
 def create_model(input_shape, model_path=""):
-    if model_path != "":
+    if model_path != "auto":
         model = models.load_model(
             model_path,
             custom_objects={

@@ -8,7 +8,7 @@ from func.callbacks import get_callback
 
 
 def training_pnet(
-    dataset_name, split_count=32, batch_size=64, max_epochs=100, model_path=""
+    dataset_name, split_count=32, batch_size=64, max_epochs=100, model_path="auto"
 ):
     (
         train_image_paths,
@@ -40,6 +40,3 @@ def training_pnet(
             epochs=1,
             callbacks=callbacks,
         )
-
-
-training_pnet("celeba")

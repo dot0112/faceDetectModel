@@ -15,7 +15,7 @@ class DisplayTimeCallback(tf.keras.callbacks.Callback):
 def get_callback():
     display_time = DisplayTimeCallback()
     checkpoint = tf.keras.callbacks.ModelCheckpoint(
-        filepath=f"./pnet/pnet_{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.keras",
+        filepath=f"./pnet/pnet_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.keras",
         monitor="val_loss",
         save_best_only=True,
         save_weights_only=False,
