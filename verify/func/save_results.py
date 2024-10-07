@@ -8,7 +8,7 @@ def save_results(
     partitial_results: tuple[any],
     negative_results: tuple[any],
 ):
-    result_save_path = f"../results/{model_name}_{datetime.now().strftime("%Y-%m-%d_%H:%M:%S")}"
+    result_save_path = f"D:/MTCNN/verify/results/{model_name}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json"
     with open(result_save_path, "w", encoding="utf-8") as file:
         data = {
             "positive_result": [str(result.numpy()) for result in positive_results],

@@ -27,7 +27,7 @@ def get_labels(
 ) -> tuple[list, list]:
     bbox_labels = [None] * len(image_paths)
     class_labels = [None] * len(image_paths)
-    part_type = {2: "positive", 1: "partial", 0: "negative"}
+    part_type = {2: "positive", 1: "partitial", 0: "negative"}
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         future_to_path = {

@@ -28,4 +28,4 @@ def dataset_generate(
     )
 
 
-dataset_generate("wider", "pnet", window_size=12)
+dataset_generate("wider", "pnet", window_size=12, batch_size=20000)
