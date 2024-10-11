@@ -28,7 +28,7 @@ def training_pnet(
     validation_dataset = dataset_generate(
         val_image_paths, val_class_labels, val_bbox_labels, batch_size, 1
     )
-    pnet_model = create_model((12, 12, 3), model_path)
+    pnet_model = create_model(model_path)
     callbacks = get_callback()
 
     for epoch in range(max_epochs):

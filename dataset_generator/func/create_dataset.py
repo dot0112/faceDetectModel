@@ -11,7 +11,10 @@ def create_dataset(
     window_size: int,
     resize_factor: float,
     batch_size: int,
+    start_with_half: bool,
+    max_length: int,
 ):
+    batch_size = min(batch_size, len(image_paths))
     for batch_num in range(0, len(image_paths), batch_size):
         batch = [
             image_paths[batch_num : batch_num + batch_size],
@@ -22,11 +25,25 @@ def create_dataset(
             total=batch_size,
             desc=f"create dataset",
         ):
-            pyramid_images, pyramid_labels = create_pyramid(
-                image_path, label, window_size, resize_factor
+            pyramid_image_paths, pyramid_label_paths = create_pyramid(
+                imageset_name,
+                image_path,
+                label,
+                window_size,
+                resize_factor,
+                start_with_half,
+                max_length,
             )
-            for p_image, p_label in zip(pyramid_images, pyramid_labels):
-                window_sliding(imageset_name, model_name, p_image, p_label, window_size)
+            for pyramid_image_path, pyramid_label_path in zip(
+                pyramid_image_paths, pyramid_label_paths
+            ):
+                window_sliding(
+                    imageset_name,
+                    model_name,
+                    pyramid_image_path,
+                    pyramid_label_path,
+                    window_size,
+                )
         print(f"0: {class_count[0]}\t1: {class_count[1]}\t2: {class_count[2]}")
         c = input("Enter '0' to stop, or press Enter to continue: ")
         if c == "0":

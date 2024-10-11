@@ -13,6 +13,8 @@ def dataset_generate(
     window_size: int = 12,
     resize_factor: float = 0.709,
     batch_size: int = 5000,
+    start_with_half: bool = False,
+    max_length: int = 0,
 ):
     image_paths, labels = get_data(imageset_name)
     image_paths, labels = shuffle_lists(image_paths, labels)
@@ -25,7 +27,15 @@ def dataset_generate(
         window_size,
         resize_factor,
         batch_size,
+        start_with_half,
+        max_length,
     )
 
 
-dataset_generate("wider", "pnet", window_size=12, batch_size=20000)
+dataset_generate(
+    "wider",
+    "pnet",
+    window_size=12,
+    batch_size=20000,
+    resize_factor=0.85,
+)

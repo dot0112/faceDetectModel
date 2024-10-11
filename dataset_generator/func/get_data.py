@@ -40,31 +40,19 @@ def get_data_celeba() -> tuple[list[str], list[list[int]]]:
 def get_data_wider():
     load_dotenv()
     root_dir_path = Path(os.getenv("imageset_path")) / "wider_dataset"
-    image_path = root_dir_path / "WIDER_train" / "images"
-    label_path = root_dir_path / "wider_face_split" / "wider_face_train_bbx_gt.txt"
+    image_dir_path = root_dir_path / "WIDER_train" / "images"
+    label_dir_path = root_dir_path / "WIDER_train" / "labels"
 
-    image_paths = []
+    image_paths = list(image_dir_path.glob("*/*.jpg"))
     labels = []
 
-    with open(label_path, "r", encoding="utf-8") as file:
-        total_lines = len(file.readlines())
-        file.seek(0)
-        count = 0
-        image_name = True
-        temp_labels = []
-        for line in tqdm(file, total=total_lines, desc="Get Data From [WIDER]"):
-            if count != 0:  # bbox label
-                count -= 1
-                label = line.strip().split()
-                temp_labels.append([int(n) for n in label[:4]])
-                if count == 0:
-                    image_name = True
-                    labels.append(temp_labels)
-                    temp_labels = []
-            elif image_name:  # image name
-                image_paths.append(image_path / line.strip())
-                image_name = False
-            else:  # label count
-                count = max(1, int(line))
+    for image_path in tqdm(image_paths, desc="Get Data From [WIDER]"):
+        image_name = image_path.stem
+        label_path = label_dir_path / (image_name + ".txt")
+        label = []
+        with open(label_path, "r", encoding="utf-8") as file:
+            for line in file:
+                label.append([float(n) for n in line.split(" ")])
+        labels.append(label)
 
     return image_paths, labels
